@@ -49,3 +49,57 @@ class WriteReceipt:
     resource_type: str
     resource_id: str
     replayed: bool
+
+
+@dataclass(frozen=True)
+class LedgerTask:
+    """表示自主任务运行账本中的一个任务及其恢复检查点。"""
+
+    task_id: str
+    idempotency_key: str
+    title: str
+    status: str
+    submitted_by: str
+    current_boundary: str
+    last_step_no: int
+    last_step_key: str | None
+    last_output_hash: str | None
+    attempt_no: int
+    result_hash: str | None
+    created_at: str
+    updated_at: str
+    replayed: bool = False
+
+
+@dataclass(frozen=True)
+class Lease:
+    """表示任务对某个资源持有的租约。"""
+
+    lease_id: str
+    task_id: str
+    resource_id: str
+    mode: str
+    status: str
+    granted_by: str
+    granted_at: str
+    released_at: str | None
+    released_by: str | None
+    release_reason: str | None
+    replayed: bool = False
+
+
+@dataclass(frozen=True)
+class StepRecord:
+    """表示任务中一个可恢复的动作步骤。"""
+
+    task_id: str
+    step_no: int
+    step_key: str
+    action_type: str
+    input_hash: str
+    output_hash: str | None
+    status: str
+    started_at: str
+    confirmed_at: str | None
+    replayed: bool = False
+    redriven: bool = False
